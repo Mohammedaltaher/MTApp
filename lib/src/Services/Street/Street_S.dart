@@ -6,7 +6,7 @@ import 'package:http/http.dart';
 // ignore: camel_case_types
 class Street_S {
   Street_S() {
-    var d = getStreets();
+    var d = getStreets(); //d
   }
   Future<StreetDto> getStreets() async {
     //try {
