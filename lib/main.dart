@@ -1,4 +1,5 @@
 import 'package:MTApp/src/UI/Login/Page/welcomePage.dart';
+import 'package:MTApp/src/UI/Map/Page/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: WelcomePage(),
+      home: MapSearch(),
     );
   }
 }
