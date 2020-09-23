@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui' as ui;
-
+import 'package:MTApp/src/Services/Map/Street_S.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapSearch extends StatefulWidget {
@@ -14,31 +11,20 @@ class MapSearch extends StatefulWidget {
 
 class _MapSearchState extends State<MapSearch> {
   Completer<GoogleMapController> _controller = Completer();
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-  MarkerId selectedMarker;
 
   static const LatLng _center = const LatLng(15.564836, 32.529831);
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
   }
 
-  Set<Marker> markers2 = Set();
-
-  Future<Uint8List> getBytesFromAsset(String path, int width) async {
-    ByteData data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-        targetWidth: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
-        .buffer
-        .asUint8List();
-  }
+  Set<Marker> markers = Set();
+  Map_S map = new Map_S();
 
   Future<void> upDateMakers() async {
     final Uint8List markerIcon =
-        await getBytesFromAsset('assets/images/car.png', 100);
+        await map.getBytesFromAsset('assets/images/car.png', 100);
     setState(() {
-      markers2.addAll([
+      markers.addAll([
         Marker(
             markerId: MarkerId('value'),
             position: LatLng(15.564836, 32.529831),
@@ -72,7 +58,7 @@ class _MapSearchState extends State<MapSearch> {
             zoom: 15.0,
           ),
           mapType: MapType.normal,
-          markers: markers2,
+          markers: markers,
         ),
       ),
     );

@@ -1,8 +1,15 @@
 import 'package:MTApp/src/UI/Login/Page/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart';
 
 class SignUpWidget {
+  final fullName = TextEditingController();
+  final username = TextEditingController();
+  final phoneNumber = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+
   Widget backButton(context) {
     return InkWell(
       onTap: () {
@@ -25,6 +32,12 @@ class SignUpWidget {
   }
 
   Widget entryField(String title, {bool isPassword = false}) {
+    var myController;
+    if (title == "Full Name") myController = fullName;
+    if (title == "Username") myController = username;
+    if (title == "Phone Number") myController = phoneNumber;
+    if (title == "Email") myController = email;
+    if (title == "Password") myController = password;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -38,6 +51,7 @@ class SignUpWidget {
             height: 10,
           ),
           TextField(
+              controller: myController,
               obscureText: isPassword,
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -48,29 +62,51 @@ class SignUpWidget {
     );
   }
 
-  Widget submitButton(context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.grey.shade200,
-                offset: Offset(2, 4),
-                blurRadius: 5,
-                spreadRadius: 2)
-          ],
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xfffbb448), Color(0xfff7892b)])),
-      child: Text(
-        'Register Now',
-        style: TextStyle(fontSize: 20, color: Colors.white),
-      ),
+  Future<void> registorNewUser() async {
+    final uri = 'http://192.168.8.185:8040/api/Users';
+    var map = new Map<String, dynamic>();
+    map['FullName'] = fullName.text;
+    map['Username'] = username.text;
+    map['PhoneNumber'] = phoneNumber.text;
+    map['Email'] = email.text;
+    map['Password'] = password.text;
+    Response response = await post(
+      uri,
+      body: map,
     );
+    print(response.body);
+  }
+
+  Widget submitButton(context) {
+    return InkWell(
+        onTap: () {
+          registorNewUser();
+          // print("fullName " + fullName.text);
+          // print("password " + password.text);
+          //post1();
+        },
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(vertical: 15),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.shade200,
+                    offset: Offset(2, 4),
+                    blurRadius: 5,
+                    spreadRadius: 2)
+              ],
+              gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [Color(0xfffbb448), Color(0xfff7892b)])),
+          child: Text(
+            'Register Now',
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ));
   }
 
   Widget loginAccountLabel(context) {
@@ -136,7 +172,7 @@ class SignUpWidget {
         entryField("Full Name"),
         entryField("Username"),
         entryField("Phone Number"),
-        entryField("Email "),
+        entryField("Email"),
         entryField("Password", isPassword: true),
       ],
     );
