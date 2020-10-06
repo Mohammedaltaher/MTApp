@@ -80,9 +80,9 @@ class SignUpWidget {
   Widget submitButton(context) {
     return InkWell(
         onTap: () {
-          registorNewUser();
-          // print("fullName " + fullName.text);
-          // print("password " + password.text);
+          //   registorNewUser();
+          print("fullName " + fullName.text);
+          print("password " + password.text);
           //post1();
         },
         child: Container(

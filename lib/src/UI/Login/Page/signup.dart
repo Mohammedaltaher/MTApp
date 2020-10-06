@@ -38,14 +38,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     SizedBox(height: height * .2),
                     w.title(context),
                     SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
                     w.emailPasswordWidget(),
                     SizedBox(
                       height: 20,
                     ),
                     w.submitButton(context),
-                    SizedBox(height: height * .14),
+                    SizedBox(height: height * .001),
                     w.loginAccountLabel(context),
                   ],
                 ),
