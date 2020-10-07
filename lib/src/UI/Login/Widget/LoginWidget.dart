@@ -59,7 +59,7 @@ class LoginWidget {
       onTap: () {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Loding()));
-      },
+      }, //gfh
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 15),
