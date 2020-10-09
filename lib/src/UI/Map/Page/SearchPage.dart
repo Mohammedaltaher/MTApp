@@ -33,6 +33,22 @@ class _MapSearchState extends State<MapSearch> {
             markerId: MarkerId('value2'),
             position: LatLng(14.564836, 32.529880),
             icon: BitmapDescriptor.fromBytes(markerIcon)),
+        Marker(
+            markerId: MarkerId('value3'),
+            position: LatLng(12.56736, 32.529880),
+            icon: BitmapDescriptor.fromBytes(markerIcon)),
+        Marker(
+            markerId: MarkerId('value4'),
+            position: LatLng(11.564936, 32.529880),
+            icon: BitmapDescriptor.fromBytes(markerIcon)),
+        Marker(
+            markerId: MarkerId('value5'),
+            position: LatLng(4.564736, 32.529880),
+            icon: BitmapDescriptor.fromBytes(markerIcon)),
+        Marker(
+            markerId: MarkerId('value6'),
+            position: LatLng(24.564836, 32.529880),
+            icon: BitmapDescriptor.fromBytes(markerIcon)),
       ]);
     });
   }

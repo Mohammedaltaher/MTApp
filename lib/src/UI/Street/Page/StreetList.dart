@@ -11,7 +11,8 @@ class StreetList extends StatefulWidget {
 
 class _StreetListState extends State<StreetList> {
   Street_S st = new Street_S();
-  StreetDto streetList;
+  StreetDto streetList ;
+
 
   void updateDate() async {
     setState(() {
