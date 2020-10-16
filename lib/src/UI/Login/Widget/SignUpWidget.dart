@@ -63,7 +63,7 @@ class SignUpWidget {
   }
 
   Future<void> registorNewUser() async {
-    final uri = 'http://192.168.8.185:8040/api/Users';
+    final uri = 'http://192.168.43.234/mtApi/api/Users';
     var map = new Map<String, dynamic>();
     map['FullName'] = fullName.text;
     map['Username'] = username.text;

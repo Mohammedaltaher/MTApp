@@ -8,7 +8,7 @@ class User {
   void getData() async {
     try {
       print("hi");
-      Response resp = await get("http://192.168.8.185:8040/api/users");
+      Response resp = await get("http://192.168.43.234/mtApi/api/Users");
       Map data = jsonDecode(resp.body);
       print(data["FullName"]);
       //  print(data);

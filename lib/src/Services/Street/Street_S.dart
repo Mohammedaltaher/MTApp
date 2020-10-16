@@ -9,20 +9,20 @@ class Street_S {
     var d = getStreets(); //d
   }
   Future<StreetDto> getStreets() async {
-    //try {
-    print("hi");
-    Response resp =
-        await get("http://192.168.8.185:8040/api/Search?streetName=s");
+    try {
+      print("hi");
+      Response resp =
+          await get("http://192.168.43.234/mtApi/api/Search?streetName=s");
 
-    print("h3");
-    Map data = jsonDecode(resp.body);
-    var street = StreetDto.fromJson(data);
+      print("h3");
+      Map data = jsonDecode(resp.body);
+      var street = StreetDto.fromJson(data);
 
-    print(street.data.elementAt(0).streetName);
+      print(street.data.elementAt(0).currentCars);
 
-    return street;
-    // } catch (e) {
-    //   print(e.toString());
-    // }
+      return street;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 }
