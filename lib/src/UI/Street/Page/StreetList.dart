@@ -2,6 +2,8 @@ import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
 import 'package:MTApp/src/Data/Street/StreetDto.dart';
 import 'package:MTApp/src/Services/Street/AllStreetDto_S.dart';
 import 'package:MTApp/src/Services/Street/Street_S.dart';
+import 'package:MTApp/src/UI/Map/Page/Loding.dart';
+import 'package:MTApp/src/UI/Map/Page/SearchPage.dart';
 import 'package:flutter/material.dart';
 
 class StreetList extends StatefulWidget {
@@ -50,39 +52,66 @@ class _StreetListState extends State<StreetList> {
               DataColumn(
                   label: Text('Name',
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold))),
+                          fontSize: 10, fontWeight: FontWeight.bold))),
               DataColumn(
-                  label: Text(' Cars',
+                  label: Text(' From',
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold))),
+                          fontSize: 10, fontWeight: FontWeight.bold))),
               DataColumn(
-                  label: Text('%',
+                  label: Text('To',
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold))),
+                          fontSize: 10, fontWeight: FontWeight.bold))),
               DataColumn(
-                  label: Text('Direction',
+                  label: Text('Traffic %',
                       style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold))),
+                          fontSize: 10, fontWeight: FontWeight.bold))),
             ],
             rows: streetList.data
                 .map(
                   ((element) => DataRow(
                         onSelectChanged: (bool selected) {
                           if (selected) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Loding(
+                                    streetId: element.streetID,
+                                  ),
+                                ));
                             print(element.carrentCars.toString());
                           }
                         },
                         cells: <DataCell>[
-                          DataCell(Text(element.carrentCars.toString())),
-                          DataCell(Text(element.capacity.toString())),
                           DataCell(Text(element.streetName.toString())),
-                          DataCell(Text(element.streetName.toString())),
+                          DataCell(Text(element.from.toString())),
+                          DataCell(Text(element.to.toString())),
+                          DataCell(
+                              Text(element.trafficJam.toStringAsFixed(2) + "%",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: getTrafficColor(
+                                        (element.trafficJam),
+                                      )))),
                         ],
                       )),
                 )
                 .toList(),
           ),
         ]));
+  }
+
+  Color getTrafficColor(double trafficJam) {
+    if (trafficJam > 90) {
+      return Colors.red;
+    } else if (trafficJam > 70) {
+      return Colors.orange[600];
+    } else if (trafficJam > 60) {
+      return Colors.yellow[600];
+    } else if (trafficJam > 20) {
+      return Colors.green[600];
+    }
+    return Colors.blue;
   }
 }
 
