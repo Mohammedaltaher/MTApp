@@ -5,12 +5,12 @@ import 'package:MTApp/src/UI/Street/Page/StreetList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-class Loding extends StatefulWidget {
+class LodeStreetData extends StatefulWidget {
   @override
-  _LodingState createState() => _LodingState();
+  _LodeStreetDataState createState() => _LodeStreetDataState();
 }
 
-class _LodingState extends State<Loding> {
+class _LodeStreetDataState extends State<LodeStreetData> {
   AllStreetDto_S st = new AllStreetDto_S();
   AllStreetDto streetList;
   String time = "loading...";

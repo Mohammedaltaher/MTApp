@@ -40,9 +40,9 @@ class _MapSearchState extends State<MapSearch> {
     _controller.complete(controller);
   }
 
-  Set<Marker> markers = Set();
   Map_S map = new Map_S();
 
+  Set<Marker> markers = Set();
   Future<void> upDateMakers() async {
     final Uint8List markerIcon =
         await map.getBytesFromAsset('assets/images/pin.png', 100);

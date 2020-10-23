@@ -1,7 +1,9 @@
 import 'package:MTApp/src/Data/Login/User.dart';
 import 'package:MTApp/src/Data/Street/StreetDto.dart';
+import 'package:MTApp/src/UI/Home/Page/HomePage.dart';
+import 'package:MTApp/src/UI/Home/Page/LodeHomeData.dart';
 import 'package:MTApp/src/UI/Login/Page/signup.dart';
-import 'package:MTApp/src/UI/Street/Page/Loding.dart';
+import 'package:MTApp/src/UI/Street/Page/LodeStreetData.dart';
 import 'package:MTApp/src/UI/Street/Page/StreetList.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -58,7 +60,7 @@ class LoginWidget {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Loding()));
+            context, MaterialPageRoute(builder: (context) => LodeHomeData()));
       }, //gfh
       child: Container(
         width: MediaQuery.of(context).size.width,

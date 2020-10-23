@@ -1,9 +1,7 @@
 import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
-import 'package:MTApp/src/Data/Street/StreetDto.dart';
 import 'package:MTApp/src/Services/Street/AllStreetDto_S.dart';
-import 'package:MTApp/src/Services/Street/Street_S.dart';
+import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Map/Page/Loding.dart';
-import 'package:MTApp/src/UI/Map/Page/SearchPage.dart';
 import 'package:flutter/material.dart';
 
 class StreetList extends StatefulWidget {
@@ -38,14 +36,16 @@ class _StreetListState extends State<StreetList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: NavDrawerWidget(),
         appBar: AppBar(
           title: Text('Streets'),
+          backgroundColor: Color(0xfff7892b),
         ),
         body: ListView(children: <Widget>[
           Center(
               child: Text(
             '',
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           )),
           DataTable(
             columns: [
@@ -82,14 +82,17 @@ class _StreetListState extends State<StreetList> {
                           }
                         },
                         cells: <DataCell>[
-                          DataCell(Text(element.streetName.toString())),
-                          DataCell(Text(element.from.toString())),
-                          DataCell(Text(element.to.toString())),
+                          DataCell(Text(element.streetName.toString(),
+                              style: TextStyle(fontSize: 10))),
+                          DataCell(Text(element.from.toString(),
+                              style: TextStyle(fontSize: 10))),
+                          DataCell(Text(element.to.toString(),
+                              style: TextStyle(fontSize: 10))),
                           DataCell(
                               Text(element.trafficJam.toStringAsFixed(2) + "%",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 20,
+                                      fontSize: 15,
                                       color: getTrafficColor(
                                         (element.trafficJam),
                                       )))),

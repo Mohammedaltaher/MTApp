@@ -30,6 +30,7 @@ class Data {
   String name;
   String cityName;
   int capcity;
+  int carsCount;
 
   Data(
       {this.id,
@@ -39,6 +40,7 @@ class Data {
       this.longitude,
       this.name,
       this.cityName,
+      this.carsCount,
       this.capcity});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class Data {
     name = json['Name'];
     cityName = json['CityName'];
     capcity = json['Capcity'];
+    carsCount = json['CarsCount'];
   }
 
   Map<String, dynamic> toJson() {
@@ -62,6 +65,7 @@ class Data {
     data['Name'] = this.name;
     data['CityName'] = this.cityName;
     data['Capcity'] = this.capcity;
+    data['CarsCount'] = this.carsCount;
     return data;
   }
 }
