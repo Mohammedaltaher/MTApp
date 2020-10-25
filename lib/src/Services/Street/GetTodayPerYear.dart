@@ -3,21 +3,18 @@ import 'package:MTApp/src/Data/Street/StreetReportDto.dart';
 import 'package:http/http.dart';
 
 // ignore: camel_case_types
-class GetTodayPerCity {
-  GetTodayPerCity() {
-    var d = getStreets(); //d
-  }
-  Future<StreetReportDto> getStreets() async {
+class GetTodayPerYear {
+  Future<StreetReportDto> getData(int StreetId) async {
     try {
-      print("city");
-      Response resp =
-          await get("http://192.168.43.234/mtApi/api/GetTodayPerCity");
+      print("hi");
+      Response resp = await get(
+          "http://192.168.43.234/mtApi/api/GetTodayPerYear?StreetId=1");
 
-      print("Get Today Per City");
+      print("h3");
       Map data = jsonDecode(resp.body);
       var street = StreetReportDto.fromJson(data);
 
-      print(street.data.elementAt(0).value);
+      print(street.data.elementAt(0).streetId);
 
       return street;
     } catch (e) {

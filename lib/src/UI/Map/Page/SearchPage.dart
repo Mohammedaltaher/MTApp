@@ -59,15 +59,6 @@ class _MapSearchState extends State<MapSearch> {
                   streetPoassition.data.elementAt(i).longitude),
               icon: BitmapDescriptor.fromBytes(markerIcon)));
       }
-      // for (var i = 0; i < currentBackCars; i++) {
-      //   if (streetPoassition.data.length > i)
-      //     markers.add(Marker(
-      //         markerId: MarkerId(
-      //             streetPoassition.data.elementAt(i).name + "-" + i.toString()),
-      //         position: LatLng(streetPoassition.data.elementAt(i).latitude,
-      //             streetPoassition.data.elementAt(i).longitude + 0.000167),
-      //         icon: BitmapDescriptor.fromBytes(markerIcon)));
-      // }
     });
   }
 

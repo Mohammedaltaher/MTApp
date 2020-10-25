@@ -1,9 +1,9 @@
-class StreetReportDto {
+class StreetsDetailsDto {
   List<Data> data;
 
-  StreetReportDto({this.data});
+  StreetsDetailsDto({this.data});
 
-  StreetReportDto.fromJson(Map<String, dynamic> json) {
+  StreetsDetailsDto.fromJson(Map<String, dynamic> json) {
     if (json['Data'] != null) {
       data = new List<Data>();
       json['Data'].forEach((v) {
@@ -22,26 +22,26 @@ class StreetReportDto {
 }
 
 class Data {
-  int streetId;
-  String value;
-  int carsCount;
-  double trafficJam;
+  int id;
+  String name;
+  String cityName;
+  int capacity;
 
-  Data({this.streetId, this.value, this.carsCount, this.trafficJam});
+  Data({this.id, this.name, this.cityName, this.capacity});
 
   Data.fromJson(Map<String, dynamic> json) {
-    streetId = json['streetId'];
-    value = json['Value'];
-    carsCount = json['carsCount'];
-    trafficJam = json['TrafficJam'];
+    id = json['Id'];
+    name = json['Name'];
+    cityName = json['CityName'];
+    capacity = json['Capacity'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['streetId'] = this.streetId;
-    data['Value'] = this.value;
-    data['carsCount'] = this.carsCount;
-    data['TrafficJam'] = this.trafficJam;
+    data['Id'] = this.id;
+    data['Name'] = this.name;
+    data['CityName'] = this.cityName;
+    data['Capacity'] = this.capacity;
     return data;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:MTApp/src/UI/Login/Page/loginPage.dart';
 import 'package:MTApp/src/UI/Login/Page/signup.dart';
+import 'package:MTApp/src/UI/Map/Page/Loding.dart';
 import 'package:MTApp/src/UI/Map/Page/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -81,6 +82,19 @@ class WelcomeWidget {
             ),
           ],
         ));
+  }
+
+  Color getTrafficColor(double trafficJam) {
+    if (trafficJam > 90) {
+      return Colors.red;
+    } else if (trafficJam > 70) {
+      return Colors.orange[600];
+    } else if (trafficJam > 60) {
+      return Colors.yellow[600];
+    } else if (trafficJam > 20) {
+      return Colors.green[600];
+    }
+    return Colors.blue;
   }
 
   Widget title(context) {

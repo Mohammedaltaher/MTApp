@@ -1,15 +1,25 @@
+import 'dart:convert';
+
+import 'package:MTApp/src/Data/Login/LoginDto.dart';
 import 'package:MTApp/src/Data/Login/User.dart';
 import 'package:MTApp/src/Data/Street/StreetDto.dart';
 import 'package:MTApp/src/UI/Home/Page/HomePage.dart';
+import 'package:MTApp/src/UI/Home/Page/IAHomeData.dart';
 import 'package:MTApp/src/UI/Home/Page/LodeHomeData.dart';
+import 'package:MTApp/src/UI/Home/Page/PoliceManHomeData.dart';
 import 'package:MTApp/src/UI/Login/Page/signup.dart';
 import 'package:MTApp/src/UI/Street/Page/LodeStreetData.dart';
 import 'package:MTApp/src/UI/Street/Page/StreetList.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 
 class LoginWidget {
+  final username = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+  LoginDto login;
   User user = new User();
   Widget backButton(context) {
     return InkWell(
@@ -33,6 +43,10 @@ class LoginWidget {
   }
 
   Widget entryField(String title, {bool isPassword = false}) {
+    var myController;
+    if (title == "Username") myController = username;
+    if (title == "Password") myController = password;
+    if (title == "Email") myController = email;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -46,6 +60,7 @@ class LoginWidget {
             height: 10,
           ),
           TextField(
+              controller: myController,
               obscureText: isPassword,
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -56,12 +71,54 @@ class LoginWidget {
     );
   }
 
+  Future<void> userLogin() async {
+    final uri = 'http://192.168.43.234/mtApi/api/Login';
+    var map = new Map<String, dynamic>();
+//    map['Username'] = username.text;
+    map['Email'] = email.text;
+    map['Password'] = password.text;
+    Response response = await post(
+      uri,
+      body: map,
+    );
+    print(response.body);
+    Map data = jsonDecode(response.body);
+    login = LoginDto.fromJson(data);
+    print(login.errorMessage);
+  }
+
   Widget submitButton(context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LodeHomeData()));
-      }, //gfh
+      onTap: () async {
+        await userLogin();
+        print("password " + password.text);
+        print("email " + email.text);
+        if (login.data != null) {
+          if (login.data.userTypeId == 1) {
+            // Traffic Man
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PoliceManHomeData()));
+          } else if (login.data.userTypeId == 2) {
+            //Citizen
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => LodeHomeData()));
+          } else if (login.data.userTypeId == 3) {
+            //InfrastructureAuthority}
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => IAHomeData()));
+          }
+        } else {
+          Fluttertoast.showToast(
+              msg: login.errorMessage.toString(),
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              //webPosition: ,
+              fontSize: 15.0);
+        }
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 15),
@@ -92,9 +149,6 @@ class LoginWidget {
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: <Widget>[
-          SizedBox(
-            width: 20,
-          ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
@@ -113,7 +167,7 @@ class LoginWidget {
             ),
           ),
           SizedBox(
-            width: 20,
+            width: 40,
           ),
         ],
       ),
@@ -186,7 +240,7 @@ class LoginWidget {
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             SizedBox(
-              width: 10,
+              width: 20,
             ),
             Text(
               'Register',
@@ -229,7 +283,7 @@ class LoginWidget {
   Widget emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        entryField("Email id"),
+        entryField("Email"),
         entryField("Password", isPassword: true),
       ],
     );

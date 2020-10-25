@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:MTApp/src/Data/Login/User.dart';
 import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
 import 'package:MTApp/src/Data/Street/StreetPossationsDto.dart';
+import 'package:MTApp/src/Data/Street/StreetReportDto.dart';
 import 'package:MTApp/src/Services/Map/Street_S.dart';
 import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Login/Widget/WelcomeWidget.dart';
@@ -12,18 +13,20 @@ import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomePage extends StatefulWidget {
+class IAHomePage extends StatefulWidget {
   final StreetPossationsDto streetPoassition;
+  final StreetReportDto cityReport;
   final AllStreetDto allStreetList;
-  HomePage({this.streetPoassition, this.allStreetList});
+  IAHomePage({this.streetPoassition, this.allStreetList, this.cityReport});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _IAHomePageState createState() => _IAHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _IAHomePageState extends State<IAHomePage> {
   User user = new User();
   StreetPossationsDto streetPoassition;
+  StreetReportDto cityReport;
   AllStreetDto allStreetList;
   Completer<GoogleMapController> _controller = Completer();
   var item;
@@ -31,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       streetPoassition = widget.streetPoassition;
       allStreetList = widget.allStreetList;
+      cityReport = widget.cityReport;
     });
   }
 
@@ -70,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
-      title: 'Monitroing Traffic',
+      title: 'MT IA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
@@ -79,11 +83,11 @@ class _HomePageState extends State<HomePage> {
       ),
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           drawer: NavDrawerWidget(),
           appBar: AppBar(
-            title: Text('MT Citzen'),
+            title: Text('MT IA'),
             automaticallyImplyLeading: false,
             backgroundColor: Color(0xfff7892b),
             bottom: TabBar(
@@ -92,6 +96,7 @@ class _HomePageState extends State<HomePage> {
               tabs: [
                 Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
                 Tab(text: 'Map', icon: Icon(Icons.map)),
+                Tab(text: 'City', icon: Icon(Icons.location_city)),
               ],
             ),
           ),
@@ -99,11 +104,65 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(child: _getStreetList()),
               Center(child: _getMap()),
+              Center(child: _getStreetCityReport()),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _getStreetCityReport() {
+    return ListView(children: <Widget>[
+      Center(
+          child: Text(
+        '',
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      )),
+      DataTable(
+        columns: [
+          DataColumn(
+              label: Text('Name',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text(' Cars',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Traffic %',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
+        ],
+        rows: cityReport.data
+            .map(
+              ((element) => DataRow(
+                    onSelectChanged: (bool selected) {
+                      if (selected) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Loding(
+                                streetId: element.streetId,
+                              ),
+                            ));
+                      }
+                    },
+                    cells: <DataCell>[
+                      DataCell(Text(element.value.toString(),
+                          style: TextStyle(fontSize: 10))),
+                      DataCell(Text(element.carsCount.toString(),
+                          style: TextStyle(fontSize: 10))),
+                      DataCell(Text(element.trafficJam.toStringAsFixed(2) + "%",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: getTrafficColor(
+                                (element.trafficJam),
+                              )))),
+                    ],
+                  )),
+            )
+            .toList(),
+      ),
+    ]);
   }
 
   Color getTrafficColor(double trafficJam) {

@@ -2,35 +2,41 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:MTApp/src/Data/Login/User.dart';
 import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
+import 'package:MTApp/src/Data/Street/StreetDetailsDto.dart';
 import 'package:MTApp/src/Data/Street/StreetPossationsDto.dart';
 import 'package:MTApp/src/Services/Map/Street_S.dart';
 import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Login/Widget/WelcomeWidget.dart';
 import 'package:MTApp/src/UI/Map/Page/Loding.dart';
+import 'package:MTApp/src/UI/Map/Page/PoliceManStreetData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomePage extends StatefulWidget {
+class PoliceManHomePage extends StatefulWidget {
   final StreetPossationsDto streetPoassition;
+  final StreetsDetailsDto allStreetDetailsdata;
   final AllStreetDto allStreetList;
-  HomePage({this.streetPoassition, this.allStreetList});
+  PoliceManHomePage(
+      {this.streetPoassition, this.allStreetList, this.allStreetDetailsdata});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _PoliceManHomePageState createState() => _PoliceManHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PoliceManHomePageState extends State<PoliceManHomePage> {
   User user = new User();
   StreetPossationsDto streetPoassition;
   AllStreetDto allStreetList;
+  StreetsDetailsDto allStreetDetailList;
   Completer<GoogleMapController> _controller = Completer();
   var item;
   void updateDate() async {
     setState(() {
       streetPoassition = widget.streetPoassition;
       allStreetList = widget.allStreetList;
+      allStreetDetailList = widget.allStreetDetailsdata;
     });
   }
 
@@ -79,11 +85,11 @@ class _HomePageState extends State<HomePage> {
       ),
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           drawer: NavDrawerWidget(),
           appBar: AppBar(
-            title: Text('MT Citzen'),
+            title: Text('MT Traffic Man'),
             automaticallyImplyLeading: false,
             backgroundColor: Color(0xfff7892b),
             bottom: TabBar(
@@ -92,6 +98,7 @@ class _HomePageState extends State<HomePage> {
               tabs: [
                 Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
                 Tab(text: 'Map', icon: Icon(Icons.map)),
+                Tab(text: 'Street Details', icon: Icon(Icons.map)),
               ],
             ),
           ),
@@ -99,6 +106,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(child: _getStreetList()),
               Center(child: _getMap()),
+              Center(child: _getStreetDetials()),
             ],
           ),
         ),
@@ -183,6 +191,55 @@ class _HomePageState extends State<HomePage> {
                               color: getTrafficColor(
                                 (element.trafficJam),
                               )))),
+                    ],
+                  )),
+            )
+            .toList(),
+      ),
+    ]);
+  }
+
+  Widget _getStreetDetials() {
+    return ListView(children: <Widget>[
+      Center(
+          child: Text(
+        '',
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      )),
+      DataTable(
+        columns: [
+          DataColumn(
+              label: Text('Name',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text(' City',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Capacity',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold))),
+        ],
+        rows: allStreetDetailList.data
+            .map(
+              ((element) => DataRow(
+                    onSelectChanged: (bool selected) {
+                      if (selected) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PoliceManStreetData(
+                                streetId: element.id,
+                              ),
+                            ));
+                        print(element.cityName.toString());
+                      }
+                    },
+                    cells: <DataCell>[
+                      DataCell(Text(element.name.toString(),
+                          style: TextStyle(fontSize: 10))),
+                      DataCell(Text(element.cityName.toString(),
+                          style: TextStyle(fontSize: 10))),
+                      DataCell(Text(element.capacity.toString(),
+                          style: TextStyle(fontSize: 10))),
                     ],
                   )),
             )
