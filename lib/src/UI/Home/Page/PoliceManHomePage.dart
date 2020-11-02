@@ -5,6 +5,7 @@ import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
 import 'package:MTApp/src/Data/Street/StreetDetailsDto.dart';
 import 'package:MTApp/src/Data/Street/StreetPossationsDto.dart';
 import 'package:MTApp/src/Services/Map/Street_S.dart';
+import 'package:MTApp/src/UI/Login/Page/loginPage.dart';
 import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Login/Widget/WelcomeWidget.dart';
 import 'package:MTApp/src/UI/Map/Page/Loding.dart';
@@ -38,6 +39,11 @@ class _PoliceManHomePageState extends State<PoliceManHomePage> {
       allStreetList = widget.allStreetList;
       allStreetDetailList = widget.allStreetDetailsdata;
     });
+  }
+
+  Future<bool> _onBackPressed() {
+    return Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   @override
@@ -75,39 +81,42 @@ class _PoliceManHomePageState extends State<PoliceManHomePage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return MaterialApp(
-      title: 'Monitroing Traffic',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
-          bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: MaterialApp(
+        title: 'Monitroing Traffic',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
+            bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
+          ),
         ),
-      ),
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          drawer: NavDrawerWidget(),
-          appBar: AppBar(
-            title: Text('MT Traffic Man'),
-            automaticallyImplyLeading: false,
-            backgroundColor: Color(0xfff7892b),
-            bottom: TabBar(
-              indicatorColor: Colors.white,
-              mouseCursor: MouseCursor.uncontrolled,
-              tabs: [
-                Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
-                Tab(text: 'Map', icon: Icon(Icons.map)),
-                Tab(text: 'Street Details', icon: Icon(Icons.map)),
+        debugShowCheckedModeBanner: false,
+        home: DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            drawer: NavDrawerWidget(),
+            appBar: AppBar(
+              title: Text('MT Traffic Man'),
+              automaticallyImplyLeading: false,
+              backgroundColor: Color(0xfff7892b),
+              bottom: TabBar(
+                indicatorColor: Colors.white,
+                mouseCursor: MouseCursor.uncontrolled,
+                tabs: [
+                  Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
+                  Tab(text: 'Map', icon: Icon(Icons.map)),
+                  Tab(text: 'Street Details', icon: Icon(Icons.map)),
+                ],
+              ),
+            ),
+            body: TabBarView(
+              children: [
+                Center(child: _getStreetList()),
+                Center(child: _getMap()),
+                Center(child: _getStreetDetials()),
               ],
             ),
-          ),
-          body: TabBarView(
-            children: [
-              Center(child: _getStreetList()),
-              Center(child: _getMap()),
-              Center(child: _getStreetDetials()),
-            ],
           ),
         ),
       ),

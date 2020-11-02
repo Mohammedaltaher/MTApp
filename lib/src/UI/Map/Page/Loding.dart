@@ -51,7 +51,7 @@ class _LodingState extends State<Loding> {
     return Scaffold(
       backgroundColor: Colors.deepOrange[400],
       body: Center(
-        child: SpinKitWave(
+        child: SpinKitCircle(
           color: Colors.white,
           size: 100.0,
         ),

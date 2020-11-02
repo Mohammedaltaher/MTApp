@@ -2,7 +2,10 @@ import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
 import 'package:MTApp/src/Services/Street/AllStreetDto_S.dart';
 import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Map/Page/Loding.dart';
+import 'package:MTApp/src/UI/Street/Page/LodeStreetData.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StreetList extends StatefulWidget {
   final AllStreetDto data;
@@ -20,6 +23,26 @@ class _StreetListState extends State<StreetList> {
       streetList = widget.data;
       print(streetList.data.elementAt(0).streetName.toString());
     });
+  }
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LodeStreetData()));
+    setState(() {});
+    _refreshController.loadComplete();
   }
 
   @override
@@ -41,67 +64,94 @@ class _StreetListState extends State<StreetList> {
           title: Text('Streets'),
           backgroundColor: Color(0xfff7892b),
         ),
-        body: ListView(children: <Widget>[
-          Center(
-              child: Text(
-            '',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          )),
-          DataTable(
-            columns: [
-              DataColumn(
-                  label: Text('Name',
-                      style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text(' From',
-                      style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('To',
-                      style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.bold))),
-              DataColumn(
-                  label: Text('Traffic %',
-                      style: TextStyle(
-                          fontSize: 10, fontWeight: FontWeight.bold))),
-            ],
-            rows: streetList.data
-                .map(
-                  ((element) => DataRow(
-                        onSelectChanged: (bool selected) {
-                          if (selected) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Loding(
-                                    streetId: element.streetID,
-                                  ),
-                                ));
-                            print(element.carrentCars.toString());
-                          }
-                        },
-                        cells: <DataCell>[
-                          DataCell(Text(element.streetName.toString(),
-                              style: TextStyle(fontSize: 10))),
-                          DataCell(Text(element.from.toString(),
-                              style: TextStyle(fontSize: 10))),
-                          DataCell(Text(element.to.toString(),
-                              style: TextStyle(fontSize: 10))),
-                          DataCell(
-                              Text(element.trafficJam.toStringAsFixed(2) + "%",
+        body: SmartRefresher(
+            enablePullDown: true,
+            enablePullUp: true,
+            header: WaterDropHeader(),
+            footer: CustomFooter(
+              builder: (BuildContext context, LoadStatus mode) {
+                Widget body;
+                if (mode == LoadStatus.idle) {
+                  body = Text("pull up load");
+                } else if (mode == LoadStatus.loading) {
+                  body = CupertinoActivityIndicator();
+                } else if (mode == LoadStatus.failed) {
+                  body = Text("Load Failed!Click retry!");
+                } else if (mode == LoadStatus.canLoading) {
+                  body = Text("release to load more");
+                } else {
+                  body = Text("No more Data");
+                }
+                return Container(
+                  height: 55.0,
+                  child: Center(child: body),
+                );
+              },
+            ),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: ListView(children: <Widget>[
+              Center(
+                  child: Text(
+                '',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              )),
+              DataTable(
+                columns: [
+                  DataColumn(
+                      label: Text('Name',
+                          style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold))),
+                  DataColumn(
+                      label: Text(' From',
+                          style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold))),
+                  DataColumn(
+                      label: Text('To',
+                          style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold))),
+                  DataColumn(
+                      label: Text('Traffic %',
+                          style: TextStyle(
+                              fontSize: 10, fontWeight: FontWeight.bold))),
+                ],
+                rows: streetList.data
+                    .map(
+                      ((element) => DataRow(
+                            onSelectChanged: (bool selected) {
+                              if (selected) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Loding(
+                                        streetId: element.streetID,
+                                      ),
+                                    ));
+                                print(element.carrentCars.toString());
+                              }
+                            },
+                            cells: <DataCell>[
+                              DataCell(Text(element.streetName.toString(),
+                                  style: TextStyle(fontSize: 10))),
+                              DataCell(Text(element.from.toString(),
+                                  style: TextStyle(fontSize: 10))),
+                              DataCell(Text(element.to.toString(),
+                                  style: TextStyle(fontSize: 10))),
+                              DataCell(Text(
+                                  element.trafficJam.toStringAsFixed(2) + "%",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15,
                                       color: getTrafficColor(
                                         (element.trafficJam),
                                       )))),
-                        ],
-                      )),
-                )
-                .toList(),
-          ),
-        ]));
+                            ],
+                          )),
+                    )
+                    .toList(),
+              ),
+            ])));
   }
 
   Color getTrafficColor(double trafficJam) {

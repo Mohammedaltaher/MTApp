@@ -4,6 +4,8 @@ import 'package:MTApp/src/Data/Login/User.dart';
 import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
 import 'package:MTApp/src/Data/Street/StreetPossationsDto.dart';
 import 'package:MTApp/src/Services/Map/Street_S.dart';
+import 'package:MTApp/src/UI/Home/Page/LodeHomeData.dart';
+import 'package:MTApp/src/UI/Login/Page/loginPage.dart';
 import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Login/Widget/WelcomeWidget.dart';
 import 'package:MTApp/src/UI/Map/Page/Loding.dart';
@@ -34,12 +36,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Timer timer;
   @override
   void initState() {
     super.initState();
     updateDate();
     upDateMakers();
+    // timer = Timer.periodic(
+    //     Duration(seconds: 30), (Timer t) => checkForNewSharedLists());
   }
+
+  // checkForNewSharedLists() {
+  //   Navigator.push(
+  //       context, MaterialPageRoute(builder: (context) => LodeHomeData()));
+  // }
+
+  // @override
+  // void dispose() {
+  //   timer?.cancel();
+  //   super.dispose();
+  // }
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
@@ -66,44 +82,51 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<bool> _onBackPressed() {
+    return Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return MaterialApp(
-      title: 'Monitroing Traffic',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
-          bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          drawer: NavDrawerWidget(),
-          appBar: AppBar(
-            title: Text('MT Citzen'),
-            automaticallyImplyLeading: false,
-            backgroundColor: Color(0xfff7892b),
-            bottom: TabBar(
-              indicatorColor: Colors.white,
-              mouseCursor: MouseCursor.uncontrolled,
-              tabs: [
-                Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
-                Tab(text: 'Map', icon: Icon(Icons.map)),
-              ],
+    return WillPopScope(
+        onWillPop: _onBackPressed,
+        child: MaterialApp(
+          title: 'Monitroing Traffic',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
+              bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
             ),
           ),
-          body: TabBarView(
-            children: [
-              Center(child: _getStreetList()),
-              Center(child: _getMap()),
-            ],
+          debugShowCheckedModeBanner: false,
+          home: DefaultTabController(
+            length: 2,
+            child: Scaffold(
+              drawer: NavDrawerWidget(),
+              appBar: AppBar(
+                title: Text('MT Citzen'),
+                automaticallyImplyLeading: false,
+                backgroundColor: Color(0xfff7892b),
+                bottom: TabBar(
+                  indicatorColor: Colors.white,
+                  mouseCursor: MouseCursor.uncontrolled,
+                  tabs: [
+                    Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
+                    Tab(text: 'Map', icon: Icon(Icons.map)),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  Center(child: _getStreetList()),
+                  Center(child: _getMap()),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Color getTrafficColor(double trafficJam) {

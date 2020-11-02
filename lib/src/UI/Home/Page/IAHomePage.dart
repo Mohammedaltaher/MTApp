@@ -5,6 +5,7 @@ import 'package:MTApp/src/Data/Street/AllStreetDto.dart';
 import 'package:MTApp/src/Data/Street/StreetPossationsDto.dart';
 import 'package:MTApp/src/Data/Street/StreetReportDto.dart';
 import 'package:MTApp/src/Services/Map/Street_S.dart';
+import 'package:MTApp/src/UI/Login/Page/loginPage.dart';
 import 'package:MTApp/src/UI/Login/Widget/NavDrawerWidget.dart';
 import 'package:MTApp/src/UI/Login/Widget/WelcomeWidget.dart';
 import 'package:MTApp/src/UI/Map/Page/Loding.dart';
@@ -36,6 +37,11 @@ class _IAHomePageState extends State<IAHomePage> {
       allStreetList = widget.allStreetList;
       cityReport = widget.cityReport;
     });
+  }
+
+  Future<bool> _onBackPressed() {
+    return Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginPage()));
   }
 
   @override
@@ -73,43 +79,45 @@ class _IAHomePageState extends State<IAHomePage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return MaterialApp(
-      title: 'MT IA',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
-          bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          drawer: NavDrawerWidget(),
-          appBar: AppBar(
-            title: Text('MT IA'),
-            automaticallyImplyLeading: false,
-            backgroundColor: Color(0xfff7892b),
-            bottom: TabBar(
-              indicatorColor: Colors.white,
-              mouseCursor: MouseCursor.uncontrolled,
-              tabs: [
-                Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
-                Tab(text: 'Map', icon: Icon(Icons.map)),
-                Tab(text: 'City', icon: Icon(Icons.location_city)),
-              ],
+    return WillPopScope(
+        onWillPop: _onBackPressed,
+        child: MaterialApp(
+          title: 'MT IA',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
+              bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
             ),
           ),
-          body: TabBarView(
-            children: [
-              Center(child: _getStreetList()),
-              Center(child: _getMap()),
-              Center(child: _getStreetCityReport()),
-            ],
+          debugShowCheckedModeBanner: false,
+          home: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              drawer: NavDrawerWidget(),
+              appBar: AppBar(
+                title: Text('MT IA'),
+                automaticallyImplyLeading: false,
+                backgroundColor: Color(0xfff7892b),
+                bottom: TabBar(
+                  indicatorColor: Colors.white,
+                  mouseCursor: MouseCursor.uncontrolled,
+                  tabs: [
+                    Tab(text: 'Streets', icon: Icon(Icons.pin_drop)),
+                    Tab(text: 'Map', icon: Icon(Icons.map)),
+                    Tab(text: 'City', icon: Icon(Icons.location_city)),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  Center(child: _getStreetList()),
+                  Center(child: _getMap()),
+                  Center(child: _getStreetCityReport()),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _getStreetCityReport() {

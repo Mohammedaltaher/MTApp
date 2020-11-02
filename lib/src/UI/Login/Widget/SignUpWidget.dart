@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:MTApp/src/UI/Login/Page/loginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 
@@ -62,7 +65,7 @@ class SignUpWidget {
     );
   }
 
-  Future<void> registorNewUser() async {
+  Future<void> registorNewUser(context) async {
     final uri = 'http://192.168.43.234/mtApi/api/Users';
     var map = new Map<String, dynamic>();
     map['FullName'] = fullName.text;
@@ -75,15 +78,40 @@ class SignUpWidget {
       body: map,
     );
     print(response.body);
+    Map<String, dynamic> jsonMap = json.decode(response.body);
+
+    if (jsonMap["Message"] == "Done") {
+      Fluttertoast.showToast(
+          msg: "The user name has been Created ",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          //webPosition: ,
+          fontSize: 15.0);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    } else {
+      Fluttertoast.showToast(
+          msg: jsonMap["Message"].toString(),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          //webPosition: ,
+          fontSize: 15.0);
+    }
   }
 
   Widget submitButton(context) {
     return InkWell(
         onTap: () {
-          //   registorNewUser();
+          registorNewUser(context);
           print("fullName " + fullName.text);
           print("password " + password.text);
-          //post1();
+          print("password " + email.text);
         },
         child: Container(
           width: MediaQuery.of(context).size.width,
